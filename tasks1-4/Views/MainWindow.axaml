@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:tasks1_4.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        CanResize="False"
+        x:Class="tasks1_4.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Микропроводник">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+            <StackPanel>
+                <TextBlock Text="Диск" HorizontalAlignment="Center" FontWeight="Bold" Margin="5" />
+                <ComboBox Name="DiskComboBox" HorizontalAlignment="Stretch"/>
+                <TextBlock Text="Сведения:" FontWeight="Bold" Margin="8"/>
+                <TextBox Name="InfoTextBox" IsReadOnly="True" BorderThickness="0"/>
+                <TextBox Name="CatalogInfoTextBox" IsReadOnly="True" BorderThickness="0"/>
+            </StackPanel>
+        </Border>
+        
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+            <StackPanel>
+                <TextBlock Text="Каталоги" HorizontalAlignment="Center" FontWeight="Bold" Margin="5" />
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="570">
+                    <ListBox Name="CatalogsListBox"/>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
+        
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="2">
+            <StackPanel>
+                <TextBlock Text="Список файлов" HorizontalAlignment="Center" FontWeight="Bold" Margin="5" />
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="570">
+                    <ListBox Name="FilesListBox"/>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
+    </Grid>
+
+</Window>
