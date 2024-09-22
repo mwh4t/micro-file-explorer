@@ -5,40 +5,47 @@ using System.Linq;
 
 namespace tasks1_4;
 
-public static class DiskInfo
+public static class Utils
 {
-    public static string GetRootDiskName()
+    public static string[] GetDisksNames()
     {
-        // получение информации о корневом диске
-        var drive = Path.GetPathRoot("/");
-        
-        return drive;
+        // путь ко всем дискам
+        var volumesPath = "/Volumes";
+
+        // получение всех дисков
+        var directories = Directory.GetDirectories(volumesPath);
+
+        // извлечение имен дисков
+        var diskNames = directories.Select(Path.GetFileName).ToArray();
+
+        return diskNames;
     }
     
-    public static string[] GetDirectories(string rootPath)
+    public static string[] GetDirectories(string selectedDisk)
     {
         // получение каталогов
-        return Directory.GetDirectories(rootPath);
+        return Directory.GetDirectories("/Volumes/" + selectedDisk);
     }
     
     public static string[] GetFiles(string path)
     {
         // получение всех файлов
-        return Directory.GetFiles(path);
+        return Directory.GetFiles("/Volumes/" + path);
     }
     
     public static (long totalSize, long freeSpace) GetDiskInfo(string path)
     {
         // получение общего объёма диска и свободного пространства
-        var driveInfo = new DriveInfo(Path.GetPathRoot(path));
+        // var driveInfo = new DriveInfo(Path.GetPathRoot("/Volumes/" + path));
+        var driveInfo = new DriveInfo("/Volumes/" + path);
         return (driveInfo.TotalSize, driveInfo.AvailableFreeSpace);
     }
     
     public static string GetDirectoryInfo(string path)
     {
         // получение информации о каталоге
-        var directoryInfo = new DirectoryInfo(path);
-        string fullPath = directoryInfo.FullName;
+        var directoryInfo = new DirectoryInfo("/Volumes/" + path);
+        string fullPath = directoryInfo.ToString();//.FullName;
         string creationTime = directoryInfo.CreationTime.ToString();
         string rootDirectory = directoryInfo.Root.ToString();
         

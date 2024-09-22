@@ -1,27 +1,50 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 
 namespace tasks1_4.Views;
 
 public partial class MainWindow : Window
 {
+    // Хранение имени файла и времени его открытия
+    private List<(string fileName, DateTime openTime)> openedFiles = new List<(string, DateTime)>();
+    private DateTime programStartTime;
+    
     public MainWindow()
     {
         InitializeComponent();
         
-        // получение combobox для отображения корневого диска
+        programStartTime = DateTime.Now;
+        
+        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+        
+        // очистка txt
+        File.WriteAllText("/Users/mwh4t/Desktop/Учёба/Колледж/3 курс/1 семестр/РПМ/lr1rpm/tasks1-4/Открываемые_файлы.txt",
+            string.Empty);
+    
+        // получение combobox для отображения дисков
         var comboBox = this.FindControl<ComboBox>("DiskComboBox");
 
-        // получение имени диска
-        var diskName = DiskInfo.GetRootDiskName();
-        
-        var items = new[] { "Ничего", diskName };
+        // получение списка дисков
+        var diskNames = Utils.GetDisksNames();
+    
+        // добавляем "Ничего" как первый элемент
+        var items = new List<string> { "Ничего" };
+    
+        // добавляем остальные диски
+        items.AddRange(diskNames);
+    
+        // присваиваем источнику данных combobox
         comboBox.ItemsSource = items;
         comboBox.SelectedItem = "Ничего"; // элемент по умолчанию
-        
+    
+        // обработка события изменения выбранного элемента
         comboBox.SelectionChanged += ComboBox_SelectionChanged;
     }
 
@@ -55,13 +78,13 @@ public partial class MainWindow : Window
             else
             {
                 // получение списка каталогов
-                var directories = DiskInfo.GetDirectories(selectedDisk).Select(Path.GetFileName);
+                var directories = Utils.GetDirectories(selectedDisk).Select(Path.GetFileName);
                 catalogsListBox.ItemsSource = directories;
                 
                 // обновление информации о диске
-                var (totalSize, freeSpace) = DiskInfo.GetDiskInfo(selectedDisk);
-                infoTextBox.Text = $"• Общий объём: {DiskInfo.FormatBytes(totalSize)}\n" +
-                                   $"• Свободное пространство: {DiskInfo.FormatBytes(freeSpace)}";
+                var (totalSize, freeSpace) = Utils.GetDiskInfo(selectedDisk);
+                infoTextBox.Text = $"• Общий объём: {Utils.FormatBytes(totalSize)}\n" +
+                                   $"• Свободное пространство: {Utils.FormatBytes(freeSpace)}";
                 
                 catalogsListBox.SelectionChanged += CatalogsListBox_SelectionChanged;
             }
@@ -88,14 +111,14 @@ public partial class MainWindow : Window
             var filesListBox = this.FindControl<ListBox>("FilesListBox");
 
             // получение списка файлов в выбранном каталоге
-            var files = DiskInfo.GetFiles(catalogPath).Select(Path.GetFileName);
+            var files = Utils.GetFiles(catalogPath).Select(Path.GetFileName);
             filesListBox.ItemsSource = files;
 
             // получение textbox для вывода информации о каталоге
             var catalogInfoTextBox = this.FindControl<TextBox>("CatalogInfoTextBox");
 
             // получение информации о каталоге с помощью метода из DiskInfo
-            string directoryInfo = DiskInfo.GetDirectoryInfo(catalogPath);
+            string directoryInfo = Utils.GetDirectoryInfo(catalogPath);
 
             // Добавляем обработчик для открытия файла при выборе
             filesListBox.SelectionChanged += FilesListBox_SelectionChanged;
@@ -111,10 +134,18 @@ public partial class MainWindow : Window
 
         if (filesListBox != null && filesListBox.SelectedItem != null)
         {
-            // получение выбранный файл
+            // Получаем выбранный файл и время его открытия
             string selectedFile = filesListBox.SelectedItem.ToString();
+            DateTime openTime = DateTime.Now;
 
-            // полчение combobox для получения выбранного диска
+            // Добавляем в список открытых файлов с временем открытия
+            openedFiles.Add((selectedFile, openTime));
+
+            // Выводим информацию о файле (например, открытие)
+            var errorTextBox = this.FindControl<TextBox>("InfoTextBox");
+            errorTextBox.Text = $"Файл \"{selectedFile}\" был открыт в {openTime.ToString("HH:mm:ss")}";
+
+            // получение combobox для получения выбранного диска
             var comboBox = this.FindControl<ComboBox>("DiskComboBox");
             string selectedDisk = comboBox.SelectedItem.ToString();
 
@@ -124,8 +155,8 @@ public partial class MainWindow : Window
             // получение выбранного каталога
             string selectedCatalog = catalogsListBox.SelectedItem?.ToString() ?? "";
 
-            // получение полного путя к файлу
-            string filePath = Path.Combine(selectedDisk, selectedCatalog, selectedFile);
+            // получение полного пути к файлу
+            string filePath = Path.Combine("/Volumes/", selectedDisk, selectedCatalog, selectedFile);
 
             // открытие файла
             try
@@ -134,10 +165,28 @@ public partial class MainWindow : Window
             }
             catch (System.Exception ex)
             {
-                var errorTextBox = this.FindControl<TextBox>("InfoTextBox");
-                errorTextBox.Text = $"Не удалось открыть файл: {ex.Message}";
+                var errorTextBox1 = this.FindControl<TextBox>("InfoTextBox");
+                errorTextBox1.Text = $"Не удалось открыть файл: {ex.Message}";
             }
         }
+    }
+    
+    private void OnProcessExit(object? sender, EventArgs e)
+    {
+        // Текущее время завершения программы
+        DateTime programEndTime = DateTime.Now;
+
+        // Ищем файлы, которые были открыты за последние 10 секунд
+        var recentFiles = openedFiles
+            .Where(f => (programEndTime - f.openTime).TotalSeconds <= 10)
+            .Select(f => $"Файл: {f.fileName}, Время открытия: {(programEndTime - f.openTime).TotalSeconds:F2} секунд до завершения")
+            .ToList();
+
+        // Записываем файлы в "Открываемые_файлы.txt"
+        File.WriteAllLines("/Users/mwh4t/Desktop/Учёба/Колледж/3 курс/1 семестр/РПМ/lr1rpm/tasks1-4/Открываемые_файлы.txt", recentFiles);
+
+        // Задержка на 1 секунду перед завершением
+        Task.Delay(1000).Wait();
     }
     
     private void InitializeComponent()
