@@ -16,31 +16,65 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0">
+
+        <!-- левая панель -->
+        <Border BorderBrush="Gray" BorderThickness="1" Grid.Column="0">
             <StackPanel>
-                <TextBlock Text="Диск" HorizontalAlignment="Center" FontWeight="Bold" Margin="5" />
-                <ComboBox Name="DiskComboBox" HorizontalAlignment="Stretch"/>
-                <TextBlock Text="Сведения:" FontWeight="Bold" Margin="8"/>
-                <TextBox Name="InfoTextBox" IsReadOnly="True" BorderThickness="0"/>
-                <TextBox Name="CatalogInfoTextBox" IsReadOnly="True" BorderThickness="0"/>
+                <TextBlock Text="Диск" 
+                           HorizontalAlignment="Center" 
+                           FontWeight="Bold" 
+                           Margin="5"
+                           FontSize="24" />
+                <ComboBox Name="DiskComboBox" FontSize="18" HorizontalAlignment="Stretch"/>
+                
+                <TextBlock Text="Сведения:" FontSize="16" FontWeight="Bold" Margin="8"/>
+                <TextBox Name="InfoTextBox"
+                         FontSize="16"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         Focusable="False" />
+                
+                <TextBox Name="CatalogInfoTextBox"
+                         FontSize="16"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         Focusable="False" />
             </StackPanel>
         </Border>
-        
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+
+        <!-- средняя панель -->
+        <Border BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
             <StackPanel>
-                <TextBlock Text="Каталоги" HorizontalAlignment="Center" FontWeight="Bold" Margin="5" />
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="570">
-                    <ListBox Name="CatalogsListBox"/>
+                <TextBlock Text="Каталоги" 
+                           HorizontalAlignment="Center" 
+                           FontWeight="Bold" 
+                           Margin="5"
+                           FontSize="24" />
+                
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="510" Background="Transparent">
+                    <ListBox Name="CatalogsListBox" 
+                             FontSize="16" 
+                             Background="Transparent" 
+                             BorderThickness="0"/>
                 </ScrollViewer>
             </StackPanel>
         </Border>
-        
-        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="2">
+
+        <!-- правая панель -->
+        <Border BorderBrush="Gray" BorderThickness="1" Grid.Column="2">
             <StackPanel>
-                <TextBlock Text="Список файлов" HorizontalAlignment="Center" FontWeight="Bold" Margin="5" />
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="570">
-                    <ListBox Name="FilesListBox"/>
+                <TextBlock Text="Список файлов" 
+                           HorizontalAlignment="Center" 
+                           FontWeight="Bold" 
+                           Margin="5"
+                           FontSize="24" />
+                
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="510" Background="Transparent">
+                    <ListBox Name="FilesListBox" FontSize="16" 
+                             Background="Transparent" 
+                             BorderThickness="0"/>
                 </ScrollViewer>
             </StackPanel>
         </Border>

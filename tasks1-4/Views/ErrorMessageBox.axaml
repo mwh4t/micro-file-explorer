@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" Width="240" Height="120" CanResize="False"
+        x:Class="tasks1_4.Views.ErrorMessageBox"
+        Title="Ошибка">
+
+    <StackPanel Margin="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Name="MessageTextBlock" 
+                   FontSize="18"
+                   TextWrapping="Wrap" 
+                   TextAlignment="Center" 
+                   Margin="0,0,0,20" />
+        
+        <Button Content="ОК" Width="40" HorizontalAlignment="Center" Click="OkButton_Click"/>
+    </StackPanel>
+
+</Window>
