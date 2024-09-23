@@ -65,7 +65,6 @@ public static class Utils
         double len = bytes;
         int order = 0;
         
-        // конвертируем в более крупные единицы, если это необходимо
         while (len >= 1024 && order < sizes.Length - 1)
         {
             order++;
