@@ -153,10 +153,14 @@ public partial class MainWindow : Window
         
         // получение списка файлов, открытых за последние 10 секунд
         var recentFiles = openedFiles
-            .Where(f => (programEndTime - f.openTime).TotalSeconds <= 10)
-            .GroupBy(f => f.fileName) // группировка по имени файла
-            .Select(g => g.OrderByDescending(f => f.openTime).First()) // выбор самого последнего файла в каждой группе
-            .Select(f => $"{f.fileName} - {(programEndTime - f.openTime).TotalSeconds:F2} сек до завершения")
+            .Where(f => 
+                (programEndTime - f.openTime).TotalSeconds <= 10)
+            .GroupBy(f => 
+                f.fileName) // группировка по имени файла
+            .Select(g => 
+                g.OrderByDescending(f => f.openTime).First()) // выбор самого последнего файла
+            .Select(f => 
+                $"{f.fileName} - {(programEndTime - f.openTime).TotalSeconds:F2} сек до завершения")
             .ToList();
         
         // запись списка в файл
